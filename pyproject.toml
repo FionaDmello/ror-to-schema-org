@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "ror-to-schema-org"
+version = "0.1.0"
+description = "ROR to Schema.org SSSOM mapping analysis"
+authors = ["Fiona D'Mello <shalomdmello@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pandas = "^2.0.0"
+numpy = "^1.24.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+# Project metadata
+[tool.poetry.urls]
+"Homepage" = "https://github.com/FionaDMello/ror-to-schema-org"
+"Repository" = "https://github.com/FionaDMello/ror-to-schema-org"
+"Bug Tracker" = "https://github.com/FionaDMello/ror-to-schema-org/issues"
+
+# Author information
+[tool.poetry.authors]
+name = "Fiona D'Mello"
+email = "shalomdmello@gmail.com"
+orcid = "https://orcid.org/0000-0002-0465-1009"
