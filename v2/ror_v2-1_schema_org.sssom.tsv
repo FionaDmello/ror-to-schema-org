@@ -1,20 +1,3 @@
-# ROR Schema v2.1 to Schema.org SSSOM Mapping
-# curie_map:
-#   ROR: https://ror.org/
-#   schema: https://schema.org/
-#   skos: http://www.w3.org/2004/02/skos/core#
-#   sssom: https://w3id.org/sssom/
-#
-# mapping_set_id: ror-v21-schema-org-mapping-v2.1.0
-# mapping_set_version: 2.1.0
-# mapping_set_title: ROR Schema v2.1 to Schema.org Mapping
-# mapping_set_description: Comprehensive mappings between Research Organization Registry schema v2.1 fields and Schema.org properties, based on actual JSON schema definitions
-# license: https://creativecommons.org/publicdomain/zero/1.0/
-# creator_id: https://orcid.org/0000-0002-0465-1009
-# mapping_date: 2024-09-03
-# mapping_tool: Claude AI Assistant
-# mapping_tool_version: 4.0
-
 subject_id	subject_label	predicate_id	object_id	object_label	mapping_justification	author_id	confidence	comment
 ROR:id	ROR Identifier	skos:exactMatch	schema:identifier	identifier	Semantic equivalence - both represent unique persistent identifiers	https://orcid.org/0000-0002-0465-1009	0.95	ROR ID is a persistent identifier following pattern ^https://ror.org/0[a-z|0-9]{8}$
 
@@ -92,3 +75,21 @@ schema:name	Name	skos:relatedMatch	ROR:names	Organization Names	Related mapping 
 schema:inLanguage	In Language	skos:exactMatch	ROR:names.lang	Name Language	Semantic equivalence - language specification	https://orcid.org/0000-0002-0465-1009	0.90	Multilingual name support with ISO language codes
 schema:additionalProperty	Additional Property	skos:relatedMatch	ROR:names.types	Name Types	Related mapping - name type metadata	https://orcid.org/0000-0002-0465-1009	0.78	Semantic context for name variants
 schema:sameAs	Same As	skos:exactMatch	ROR:external_ids	External Identifiers	Semantic equivalence - entity equivalence assertions	https://orcid.org/0000-0002-0465-1009	0.92	Cross-reference to same organizations in other systems
+
+# ROR Schema v2.1 to Schema.org SSSOM Mapping
+# curie_map:
+#   ROR: https://ror.org/
+#   schema: https://schema.org/
+#   skos: http://www.w3.org/2004/02/skos/core#
+#   sssom: https://w3id.org/sssom/
+#
+# mapping_set_id: ror-v21-schema-org-mapping-v2.1.0
+# mapping_set_version: 2.1.0
+# mapping_set_title: ROR Schema v2.1 to Schema.org Mapping
+# mapping_set_description: Comprehensive mappings between Research Organization Registry schema v2.1 fields and Schema.org properties, based on actual JSON schema definitions
+# license: https://creativecommons.org/publicdomain/zero/1.0/
+# creator_id: https://orcid.org/0000-0002-0465-1009
+# mapping_date: 2024-09-03
+# mapping_tool: Claude AI Assistant
+# mapping_tool_version: 4.0
+
