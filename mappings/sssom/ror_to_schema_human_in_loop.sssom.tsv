@@ -17,16 +17,28 @@
 
 
 subject_id	subject_label	predicate_id	object_id	object_label	mapping_justification	author_id	confidence	comment
-ROR:id	ROR Identifier	skos:exactMatch	schema:identifier	identifier	Semantic equivalence - both represent unique persistent identifiers	https://orcid.org/0000-0002-0465-1009	0.95	ROR ID is a persistent identifier following pattern ^https://ror.org/0[a-z|0-9]{8}$
 ROR:status	Organization Status	skos:relatedMatch	schema:additionalProperty	additionalProperty	Related mapping - status as structured property with name-value pair	https://orcid.org/0000-0002-0465-1009	0.80	PropertyValue with name='registryStatus' and value from ROR enum (active, inactive, withdrawn)
+ROR:established	Year Established	skos:exactMatch	schema:additionalProperty	additionalProperty	Type-safe semantic preservation via PropertyValue structure	https://orcid.org/0000-0002-0465-1009	0.90	Numerical year preserved in PropertyValue due to ROR number type vs Schema.org Date type incompatibility
+ROR:domains	Organization Domains Array	skos:exactMatch	schema:additionalProperty	additionalProperty	Exact mapping - registered domains as structured institutional metadata	https://orcid.org/0000-0002-0465-1009	0.92	Array of domain names preserved in PropertyValue structure for institutional identification
+
 ROR:names.value	Name Value String	skos:exactMatch	schema:name	name	Semantic equivalence - contains the actual name text content	https://orcid.org/0000-0002-0465-1009	0.95	All name values are the primary text strings for organizational names
 ROR:names.ror_display	Primary Display Name	skos:relatedMatch	schema:name	name	Related mapping - canonical display name when different from primary value	https://orcid.org/0000-0002-0465-1009	0.88	ror_display is schema:name when it represents the preferred display form; schema:alternateName otherwise
 ROR:names.label	Label Name	skos:exactMatch	schema:legalName	legalName	Semantic equivalence - official organizational designation	https://orcid.org/0000-0002-0465-1009	0.90	label typically represents the official/legal name of the organization
 ROR:names.alias	Alias Name	skos:exactMatch	schema:alternateName	alternateName	Semantic equivalence - organizational aliases and alternate forms	https://orcid.org/0000-0002-0465-1009	0.95	alias directly corresponds to alternate name variants
 ROR:names.acronym	Acronym Name	skos:exactMatch	schema:alternateName	alternateName	Semantic equivalence - acronyms as alternate name forms	https://orcid.org/0000-0002-0465-1009	0.92	acronyms function as abbreviated alternate names
 ROR:names.lang	Name Language Code	skos:relatedMatch	schema:additionalProperty	additionalProperty	Related mapping - language metadata as structured property	https://orcid.org/0000-0002-0465-1009	0.75	ISO 639-1 language codes preserved in StructuredValue.inLanguage.alternateName when using multilingual additionalProperty approach
-ROR:established	Year Established	skos:exactMatch	schema:additionalProperty	additionalProperty	Type-safe semantic preservation via PropertyValue structure	https://orcid.org/0000-0002-0465-1009	0.90	Numerical year preserved in PropertyValue due to ROR number type vs Schema.org Date type incompatibility
-ROR:domains	Organization Domains Array	skos:exactMatch	schema:additionalProperty	additionalProperty	Exact mapping - registered domains as structured institutional metadata	https://orcid.org/0000-0002-0465-1009	0.92	Array of domain names preserved in PropertyValue structure for institutional identification
+
+ROR:*	ROR Record	skos:narrowMatch	schema:ResearchOrganization	ResearchOrganization	Narrow mapping - ROR focuses on research organizations	https://orcid.org/0000-0002-0465-1009	0.88	All ROR records represent research-related organizations
+ROR:*	ROR Record	skos:broadMatch	schema:Organization	Organization	Broad mapping - all ROR records are organizations	https://orcid.org/0000-0002-0465-1009	0.95	ROR records inherit from Organization class
+ROR:id	ROR Identifier	skos:exactMatch	schema:identifier	identifier	Semantic equivalence - both represent unique persistent identifiers	https://orcid.org/0000-0002-0465-1009	0.95	ROR ID is a persistent identifier following pattern ^https://ror.org/0[a-z|0-9]{8}$
+
+ROR:admin	Administrative Information Object	skos:relatedMatch	schema:CreativeWork	CreativeWork	Related mapping - admin metadata similar to creative work metadata	https://orcid.org/0000-0002-0465-1009	0.68	Administrative metadata for ROR record management
+ROR:admin.created	Creation Information Object	skos:exactMatch	schema:dateCreated	dateCreated	Semantic equivalence - record creation information	https://orcid.org/0000-0002-0465-1009	0.88	When ROR record was created
+ROR:admin.created.date	Creation Date	skos:exactMatch	schema:dateCreated	dateCreated	Semantic equivalence - specific creation date	https://orcid.org/0000-0002-0465-1009	0.95	ISO date format for record creation
+ROR:admin.created.schema_version	Creation Schema Version	skos:relatedMatch	schema:version	version	Related mapping - schema version at creation	https://orcid.org/0000-0002-0465-1009	0.85	Schema version when record was created (1.0, 2.0, 2.1)
+ROR:admin.last_modified	Last Modified Information Object	skos:exactMatch	schema:dateModified	dateModified	Semantic equivalence - record modification information	https://orcid.org/0000-0002-0465-1009	0.88	When ROR record was last modified
+ROR:admin.last_modified.date	Last Modified Date	skos:exactMatch	schema:dateModified	dateModified	Semantic equivalence - specific modification date	https://orcid.org/0000-0002-0465-1009	0.95	ISO date format for record modification
+ROR:admin.last_modified.schema_version	Modification Schema Version	skos:relatedMatch	schema:version	version	Related mapping - schema version at modification	https://orcid.org/0000-0002-0465-1009	0.85	Schema version when record was last modified
 
 ROR:types	Organization Types Array	skos:closeMatch	schema:additionalType	additionalType	Close mapping - organizational type categorization alignment	https://orcid.org/0000-0002-0465-1009	0.88	ROR provides specific organizational categorization
 ROR:types.education	Education Type	skos:narrowMatch	schema:EducationalOrganization	EducationalOrganization	Narrow mapping - education type to specific schema.org class	https://orcid.org/0000-0002-0465-1009	0.92	Direct correspondence for educational institutions
@@ -70,21 +82,3 @@ ROR:relationships.type.successor	Successor Relationship	skos:relatedMatch	schema
 ROR:relationships.type.predecessor	Predecessor Relationship	skos:relatedMatch	schema:replacee	replacee	Related mapping - predecessor indicates being replaced	https://orcid.org/0000-0002-0465-1009	0.75	Organization preceded by another organization
 ROR:relationships.id	Related Organization ID	skos:exactMatch	schema:identifier	identifier	Semantic equivalence - identifier of related organization	https://orcid.org/0000-0002-0465-1009	0.88	ROR ID of related organization
 ROR:relationships.label	Related Organization Label	skos:exactMatch	schema:name	name	Semantic equivalence - name of related organization	https://orcid.org/0000-0002-0465-1009	0.90	Display name of related organization
-
-ROR:admin	Administrative Information Object	skos:relatedMatch	schema:CreativeWork	CreativeWork	Related mapping - admin metadata similar to creative work metadata	https://orcid.org/0000-0002-0465-1009	0.68	Administrative metadata for ROR record management
-ROR:admin.created	Creation Information Object	skos:exactMatch	schema:dateCreated	dateCreated	Semantic equivalence - record creation information	https://orcid.org/0000-0002-0465-1009	0.88	When ROR record was created
-ROR:admin.created.date	Creation Date	skos:exactMatch	schema:dateCreated	dateCreated	Semantic equivalence - specific creation date	https://orcid.org/0000-0002-0465-1009	0.95	ISO date format for record creation
-ROR:admin.created.schema_version	Creation Schema Version	skos:relatedMatch	schema:version	version	Related mapping - schema version at creation	https://orcid.org/0000-0002-0465-1009	0.85	Schema version when record was created (1.0, 2.0, 2.1)
-ROR:admin.last_modified	Last Modified Information Object	skos:exactMatch	schema:dateModified	dateModified	Semantic equivalence - record modification information	https://orcid.org/0000-0002-0465-1009	0.88	When ROR record was last modified
-ROR:admin.last_modified.date	Last Modified Date	skos:exactMatch	schema:dateModified	dateModified	Semantic equivalence - specific modification date	https://orcid.org/0000-0002-0465-1009	0.95	ISO date format for record modification
-ROR:admin.last_modified.schema_version	Modification Schema Version	skos:relatedMatch	schema:version	version	Related mapping - schema version at modification	https://orcid.org/0000-0002-0465-1009	0.85	Schema version when record was last modified
-
-ROR:*	ROR Record	skos:narrowMatch	schema:ResearchOrganization	ResearchOrganization	Narrow mapping - ROR focuses on research organizations	https://orcid.org/0000-0002-0465-1009	0.88	All ROR records represent research-related organizations
-ROR:*	ROR Record	skos:broadMatch	schema:Organization	Organization	Broad mapping - all ROR records are organizations	https://orcid.org/0000-0002-0465-1009	0.95	ROR records inherit from Organization class
-
-schema:Organization	Organization	skos:relatedMatch	ROR:*	ROR Record	Related mapping - schema.org organizations can be enhanced with ROR data	https://orcid.org/0000-0002-0465-1009	0.85	ROR provides detailed research organization data
-schema:ResearchOrganization	Research Organization	skos:relatedMatch	ROR:*	ROR Record	Related mapping - direct domain alignment	https://orcid.org/0000-0002-0465-1009	0.92	ROR specializes in research organization registry
-schema:identifier	Identifier	skos:relatedMatch	ROR:id	ROR Identifier	Related mapping - persistent identifier alignment	https://orcid.org/0000-0002-0465-1009	0.95	ROR provides persistent organizational identifiers
-schema:FundingAgency	Funding Agency	skos:relatedMatch	ROR:types.funder	Funder Type	Related mapping - funding organization specialization	https://orcid.org/0000-0002-0465-1009	0.95	v2.0+ specific funder type for funding agencies
-schema:additionalProperty	Additional Property	skos:relatedMatch	ROR:names.types	Name Types	Related mapping - name type metadata	https://orcid.org/0000-0002-0465-1009	0.78	Semantic context for name variants
-schema:sameAs	Same As	skos:exactMatch	ROR:external_ids	External Identifiers	Semantic equivalence - entity equivalence assertions	https://orcid.org/0000-0002-0465-1009	0.92	Cross-reference to same organizations in other systems
