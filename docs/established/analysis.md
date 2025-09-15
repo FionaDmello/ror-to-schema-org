@@ -1,123 +1,114 @@
-# ROR `established` Field Mapping Analysis
+# ROR `established` to Schema.org Mapping Analysis
 
 ## Overview
 
 Analysis of mapping ROR's `established` field to Schema.org properties, focusing on both semantic compatibility and type safety requirements.
 
-## ROR Schema Definition
+## Current Mapping (Line [LINE_NUMBER])
+
+```tsv
+[NEEDS_TO_BE_IDENTIFIED_FROM_SSSOM_FILE]
+```
+
+## ROR Field Definition
 
 **Field:** `established`
-- **Type:** `null` or `number` 
+- **Type:** `null` or `number`
 - **Default:** `null`
 - **Semantic meaning:** Numerical year when the organization was established (e.g., `1985`)
 - **Schema location:** Line 70-75 in `ror_schema_v2_1.json`
+- **Examples:** `1985`, `2003`, `null`
 
-## Schema.org Candidate Properties
+### ROR Schema Structure
 
-### Initially Considered: `foundingDate`
+```json
+"established": {
+    "type": ["null", "number"],
+    "default": null
+}
+```
 
-- **Property:** `schema:foundingDate`
-- **Domain:** `schema:Organization` ✅
-- **Range:** `schema:Date` ❌ 
+## Schema.org Analysis
+
+### Target Property: `foundingDate`
+
+- **Property type:** Date
+- **Domain:** Organization
+- **Range:** Date
 - **Comment:** "The date that this organization was founded"
-- **Semantic match:** Perfect ✅
-- **Type match:** Failed ❌ (expects Date, not number)
+- **Cardinality:** Single value
 
-### Alternative Properties Evaluated
+## Mapping Evaluation
 
-**`schema:dateCreated`:**
-- **Domain:** `CreativeWork`, `DataFeedItem` ❌
-- **Issue:** Wrong domain - not for organizations
+### ✅ Current Mapping Strengths
+- Perfect semantic match for founding/establishment concept
+- Appropriate domain (Organization)
 
-**`schema:dissolutionDate`:**
-- **Domain:** `schema:Organization` ✅
-- **Range:** `schema:Date` ❌
-- **Issue:** Opposite semantic meaning (end vs start)
+### ❌ Current Mapping Issues
+- **Type mismatch**: ROR uses number (year), Schema.org expects Date
+- **Format incompatibility**: `1985` vs `"1985-01-01"` or `"1985"`
 
-## Type Compatibility Analysis
+### Alternative Mappings Evaluated
 
-### The Core Problem
+#### Option 1: schema:foundingDate with conversion
+- **Mapping**: `ROR:established` → `schema:foundingDate`
+- **Predicate**: `skos:exactMatch`
+- **Confidence**: 0.85
+- **Pros**:
+  - Perfect semantic alignment
+  - Uses intended temporal property
+- **Cons**:
+  - Requires data transformation (number to date string)
+  - Introduces assumptions about date precision
 
-ROR stores establishment as:
-```json
-{
-  "established": 1985
-}
+#### Option 2: schema:additionalProperty
+- **Mapping**: `ROR:established` → `schema:additionalProperty`
+- **Predicate**: `skos:exactMatch`
+- **Confidence**: 0.90
+- **Pros**:
+  - Type-safe (PropertyValue accepts numeric values)
+  - Preserves exact semantic meaning
+  - Maintains data fidelity
+- **Cons**:
+  - Doesn't use semantic equivalent property
+  - Slightly more complex structure
+
+## Recommendation
+
+**Recommended mapping:** `ROR:established` → `schema:additionalProperty`
+
+### Rationale
+
+1. **Type Safety**: PropertyValue structure handles numeric values correctly
+2. **Semantic Preservation**: Maintains exact ROR establishment semantics
+3. **Data Fidelity**: No loss of precision or assumptions about date format
+4. **Schema Compliance**: Uses PropertyValue structure as intended
+5. **Extensibility**: Can accommodate additional metadata if needed
+
+### Updated Mapping
+
+```tsv
+ROR:established	Organization Established Year	skos:exactMatch	schema:additionalProperty	additionalProperty	Exact mapping - establishment year as structured property with numeric value	https://orcid.org/0000-0002-0465-1009	0.90	Numeric year preserved in PropertyValue structure
 ```
-
-Schema.org expects Date format:
-```json
-{
-  "foundingDate": "1985-01-01"  // or "1985" 
-}
-```
-
-**Key Finding:** No Schema.org property exists that:
-1. Has semantic meaning of "establishment/founding year" ✅
-2. Accepts `Number`/`Integer` type ✅  
-3. Has `schema:Organization` in domain ✅
-
-## Recommended Solution
-
-### Use `additionalProperty` with PropertyValue
-
-**Mapping:**
-- **Subject:** `ROR:established`
-- **Object:** `schema:additionalProperty`  
-- **Predicate:** `skos:exactMatch`
-- **Confidence:** 0.90
-
-**Implementation Structure:**
-```json
-{
-  "@type": "Organization",
-  "additionalProperty": {
-    "@type": "PropertyValue", 
-    "name": "established",
-    "value": 1985,
-    "description": "Year the organization was established"
-  }
-}
-```
-
-**Advantages:**
-- ✅ Preserves exact semantic meaning
-- ✅ Type-safe (PropertyValue accepts numeric values)
-- ✅ Extensible and well-documented approach
-- ✅ Maintains data fidelity
-
-## Alternative Approaches Considered
-
-### Option 1: Type Conversion to foundingDate
-- Convert number to Date string (e.g., `1985` → `"1985-01-01"`)
-- **Pros:** Uses semantic equivalent property
-- **Cons:** Data transformation required, introduces assumptions about date precision
-
-### Option 2: Text Representation  
-- Store as text in additionalProperty
-- **Pros:** Simple implementation
-- **Cons:** Loses numeric typing, reduces queryability
-
-### Option 3: No Mapping
-- Document as unmappable due to type constraints
-- **Cons:** Loses valuable temporal information
 
 ## Confidence Rationale
 
 **Confidence: 0.90** based on:
 - Perfect semantic preservation (1.0)
-- Type safety maintained (1.0) 
+- Type safety maintained (1.0)
 - Uses intended Schema.org pattern for custom properties (0.9)
 - Slight reduction for not using direct temporal property (-0.1)
 
-## Implementation Notes
+## References
 
-When implementing this mapping:
-1. Use PropertyValue structure to preserve semantics
-2. Include descriptive name field for clarity
-3. Consider adding unitText: "year" for additional context
-4. Maintain numeric data type for computational use
+- [ROR Schema Documentation](https://ror.readme.io/docs/ror-data-structure)
+- [ROR Schema v2.1](https://github.com/ror-community/ror-schema)
+- [Schema.org Organization](https://schema.org/Organization)
+- [Schema.org PropertyValue](https://schema.org/PropertyValue)
+- [Schema.org foundingDate](https://schema.org/foundingDate)
 
-## Conclusion
+---
 
-The `additionalProperty` approach provides the optimal balance of semantic accuracy and type safety when strict type+semantic matching is required. While not as elegant as a direct temporal property mapping, it preserves all original information while remaining fully compliant with Schema.org specifications.
+*Analysis conducted: 2024-09-10*
+*Updated mapping file: mappings/ror_v2-1_schema_org_human_in_loop.sssom.tsv*
+*Related analysis: established/implementation_example.md*

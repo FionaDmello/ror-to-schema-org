@@ -1,25 +1,25 @@
-# ROR Status to Schema.org Mapping Analysis
+# ROR `status` to Schema.org Mapping Analysis
 
-## Problem Statement
+## Overview
 
-The ROR schema v2.1 `status` field (line 26 in human-in-loop mapping) required a better semantic mapping to Schema.org properties due to type incompatibility and semantic misalignment with the original mapping.
+Analysis of mapping ROR's `status` field to Schema.org properties, addressing type incompatibility and semantic misalignment with the original mapping.
 
-## Original Mapping Issues
+## Current Mapping (Line 26)
 
-**Original mapping:**
 ```tsv
 ROR:status → schema:status (skos:relatedMatch, confidence: 0.60)
 ```
 
-**Critical issues identified:**
+## ROR Field Definition
 
-1. **Non-existent property**: `schema:Thing.status` does not exist in Schema.org vocabulary
-2. **Low confidence**: 0.60 confidence reflected the poor semantic alignment
-3. **Type mismatch concern**: Even if it existed, status enum values would need appropriate Schema.org equivalents
+**Field:** `status`
+- **Type:** string (enum)
+- **Default:** `"active"`
+- **Semantic meaning:** Registry operational status of the organization
+- **Schema location:** `/json/ror/ror_schema_v2_1.json:327-335`
+- **Examples:** `"active"`, `"inactive"`, `"withdrawn"`
 
-## ROR Status Field Analysis
-
-**Source:** `/json/ror/ror_schema_v2_1.json:327-335`
+### ROR Schema Structure
 
 ```json
 "status": {
@@ -40,36 +40,42 @@ ROR:status → schema:status (skos:relatedMatch, confidence: 0.60)
 
 ## Schema.org Analysis
 
-### Detailed Alternative Evaluation:
+### Target Property: `status`
 
-#### 1. **dissolutionDate** ❌
-- **Property type**: Date
-- **ROR type**: enum string (active, inactive, withdrawn)
-- **Issues**:
-  - Fundamental type mismatch - cannot map enum to date
-  - Only semantically relevant for inactive/withdrawn states
+- **Property type:** Text/Enumeration
+- **Domain:** MedicalStudy, MedicalCondition, MedicalProcedure
+- **Range:** EventStatusType, MedicalStudyStatus, Text
+- **Comment:** Domain-specific status property
+- **Cardinality:** Single value
+
+## Mapping Evaluation
+
+### ✅ Current Mapping Strengths
+- Simple direct property mapping concept
+
+### ❌ Current Mapping Issues
+- **Non-existent property**: `schema:Thing.status` does not exist in Schema.org vocabulary
+- **Domain mismatch**: Available status properties are domain-specific to medical contexts
+- **Type constraint violations**: Would violate Schema.org type constraints if applied to Organization
+- **Low confidence**: 0.60 confidence reflected the poor semantic alignment
+
+### Alternative Mappings Evaluated
+
+#### Option 1: dissolutionDate
+- **Mapping**: `ROR:status` → `schema:dissolutionDate`
+- **Predicate**: `skos:narrowMatch`
+- **Confidence**: 0.75
+- **Pros**:
+  - Semantically relevant for inactive/withdrawn states
+- **Cons**:
+  - Fundamental type mismatch (enum to date)
+  - Only applicable to inactive/withdrawn, not active
   - Active organizations have no dissolution concept
-- **Confidence if used**: 0.75 (for inactive/withdrawn only)
-- **Original consideration**: Seemed logical for inactive organizations but fails on type compatibility
 
-
-#### 2. **schema:status** ❌
-- **Property type**: Text/Enumeration
-- **Domain**: MedicalStudy, MedicalCondition, MedicalProcedure
-- **Range**: EventStatusType, MedicalStudyStatus, Text
-- **Issues**:
-  - Domain-specific, not applicable to Organization type
-  - Would violate Schema.org type constraints
-- **Confidence if used**: 0.40
-- **Why evaluated**: Found during Schema.org property search
-
-#### 3. **additionalType** 🔄
-- **Property type**: URL/Text
-- **Range**: Class or URL from external vocabulary
-- **Approach**: Map ROR status as additional type classifications
-  - `ror:ActiveOrganization`
-  - `ror:InactiveOrganization`
-  - `ror:WithdrawnOrganization`
+#### Option 2: additionalType
+- **Mapping**: `ROR:status` → `schema:additionalType`
+- **Predicate**: `skos:relatedMatch`
+- **Confidence**: 0.70
 - **Pros**:
   - Creates semantic types for status
   - Standard Schema.org pattern for external vocabularies
@@ -77,19 +83,11 @@ ROR:status → schema:status (skos:relatedMatch, confidence: 0.60)
   - Requires creating custom ROR vocabulary URIs
   - Loses direct enum value representation
   - More complex implementation
-- **Confidence**: 0.70
-- **Implementation example**:
-  ```json
-  {
-    "@type": ["Organization"],
-    "additionalType": "https://ror.org/vocab/ActiveOrganization"
-  }
-  ```
 
-#### 4. **disambiguatingDescription** 🔄
-- **Property type**: Text
-- **Range**: Text
-- **Approach**: Use status as descriptive disambiguation
+#### Option 3: disambiguatingDescription
+- **Mapping**: `ROR:status` → `schema:disambiguatingDescription`
+- **Predicate**: `skos:relatedMatch`
+- **Confidence**: 0.65
 - **Pros**:
   - Simple text representation
   - Human-readable
@@ -97,87 +95,56 @@ ROR:status → schema:status (skos:relatedMatch, confidence: 0.60)
   - Loses structured/enumerated nature
   - More descriptive than semantic
   - No standardization of values
-- **Confidence**: 0.65
-- **Implementation example**:
-  ```json
-  {
-    "@type": "Organization",
-    "disambiguatingDescription": "Registry status: active"
-  }
-  ```
 
-#### 5. **nonprofitStatus** ❌
-- **Property type**: NonprofitType enumeration
-- **Range**: Specific to nonprofit classification
-- **Issues**:
-  - Domain-specific to nonprofit organizations
-  - Not applicable to all ROR organization types
-  - Different semantic meaning than registry status
-- **Confidence if used**: 0.30
-
-#### 6. **additionalProperty** ✅ (Chosen solution)
-- **Property type**: PropertyValue
-- **Range**: PropertyValue (structured name-value pairs)
-- **Approach**: Create structured property with name='registryStatus'
+#### Option 4: additionalProperty
+- **Mapping**: `ROR:status` → `schema:additionalProperty`
+- **Predicate**: `skos:exactMatch`
+- **Confidence**: 0.80
 - **Pros**:
-  - Type-safe: PropertyValue handles structured data
-  - Semantic preservation: Maintains exact ROR enum values
-  - Standard pattern: Established Schema.org convention for custom metadata
-  - Extensible: Can accommodate future ROR status values
-  - Flexible: Can include additional context if needed
+  - Type-safe (PropertyValue handles structured data)
+  - Semantic preservation (maintains exact ROR enum values)
+  - Standard pattern (established Schema.org convention)
+  - Extensible (can accommodate future ROR status values)
 - **Cons**:
   - Slightly more complex JSON-LD structure
   - Custom property name not standardized
-- **Confidence**: 0.80
-- **Implementation example**:
-  ```json
-  {
-    "@type": "Organization",
-    "additionalProperty": {
-      "@type": "PropertyValue",
-      "name": "registryStatus",
-      "value": "active",
-      "description": "ROR registry operational status"
-    }
-  }
-  ```
 
-## Recommended Solution
+## Recommendation
 
-**Updated mapping:**
+**Recommended mapping:** `ROR:status` → `schema:additionalProperty`
+
+### Rationale
+
+1. **Type Safety**: PropertyValue structure handles enum values correctly
+2. **Semantic Preservation**: Maintains exact ROR status semantics
+3. **Standard Pattern**: Follows Schema.org conventions for custom metadata
+4. **Extensibility**: Future ROR status values can be accommodated
+5. **Higher Confidence**: Improved from 0.60 to 0.80 due to better semantic fit
+
+### Updated Mapping
+
 ```tsv
-ROR:status → schema:additionalProperty (skos:relatedMatch, confidence: 0.80)
+ROR:status	Organization Registry Status	skos:exactMatch	schema:additionalProperty	additionalProperty	Exact mapping - registry status as structured property with enum value	https://orcid.org/0000-0002-0465-1009	0.80	Registry operational status preserved in PropertyValue structure
 ```
 
-**Justification:** "Related mapping - status as structured property with name-value pair"
+## Confidence Rationale
 
-**Implementation details:** "PropertyValue with name='registryStatus' and value from ROR enum (active, inactive, withdrawn)"
+**Confidence: 0.80** based on:
+- Semantic preservation (1.0)
+- Type safety maintained (1.0)
+- Uses intended Schema.org pattern for custom properties (0.9)
+- Slight reduction for not using direct status property (-0.1)
 
-## Benefits of additionalProperty Approach
+## References
 
-1. **Type safety**: PropertyValue structure handles enum values correctly
-2. **Semantic preservation**: Maintains exact ROR status semantics
-3. **Standard pattern**: Follows Schema.org conventions for custom metadata
-4. **Higher confidence**: Improved from 0.60 to 0.80 due to better semantic fit
-5. **Extensibility**: Future ROR status values can be accommodated
-
-## JSON-LD Implementation Example
-
-```json
-{
-  "@type": "Organization",
-  "additionalProperty": {
-    "@type": "PropertyValue",
-    "name": "registryStatus",
-    "value": "active"
-  }
-}
-```
-
-## Conclusion
-
-The `additionalProperty` mapping provides a semantically appropriate, type-safe solution that preserves ROR's registry status information while conforming to Schema.org patterns. This approach significantly improves the mapping quality and confidence level.
+- [ROR Schema Documentation](https://ror.readme.io/docs/ror-data-structure)
+- [ROR Schema v2.1](https://github.com/ror-community/ror-schema)
+- [Schema.org Organization](https://schema.org/Organization)
+- [Schema.org PropertyValue](https://schema.org/PropertyValue)
+- [Schema.org additionalProperty](https://schema.org/additionalProperty)
 
 ---
+
 *Analysis conducted: 2024-09-10*
 *Updated mapping file: mappings/ror_v2-1_schema_org_human_in_loop.sssom.tsv:26*
+*Related analysis: status/implementation_example.md*

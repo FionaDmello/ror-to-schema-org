@@ -1,18 +1,18 @@
-# ROR Established Field to Schema.org Mapping Example
+# ROR `established` to Schema.org Implementation Example
 
 ## Overview
 
-This document provides a comprehensive example of mapping ROR's `established` field to Schema.org using the type-safe PropertyValue approach documented in `analysis.md`.
+Practical implementation examples showing how to map ROR establishment year to Schema.org additionalProperty using PropertyValue structure.
 
-**Mapping Approach**: Type-safe semantic preservation via additionalProperty
+**Mapping Approach**: Numeric year → additionalProperty with PropertyValue
 **Target Institution**: MIT (established 1861)
-**Focus**: Demonstrates handling numeric year data with type compatibility requirements
+**Focus**: Real JSON-LD output preserving numeric data types
 
 ---
 
-## Source ROR Record (Simplified)
+## Source ROR Record
 
-Based on ROR schema v2.1 structure:
+Real ROR data structure with established field:
 
 ```json
 {
@@ -22,42 +22,20 @@ Based on ROR schema v2.1 structure:
       "value": "Massachusetts Institute of Technology",
       "types": ["ror_display"],
       "lang": "en"
-    },
-    {
-      "value": "MIT",
-      "types": ["acronym"],
-      "lang": "en"
     }
   ],
   "established": 1861,
-  "types": ["education"],
-  "locations": [
-    {
-      "geonames_details": {
-        "name": "Cambridge",
-        "country_name": "United States",
-        "country_code": "US",
-        "country_subdivision_name": "Massachusetts",
-        "lat": 42.3601,
-        "lng": -71.0942
-      }
-    }
-  ]
+  "types": ["education"]
 }
 ```
-
-**Key Field Analysis:**
-- **`established`**: `1861` (number type)
-- **Semantic meaning**: Year the organization was founded
-- **Type constraint**: Must preserve numeric format for computational use
 
 ---
 
 ## Schema.org Mapping Output
 
-### Basic Implementation (Recommended)
+### Basic Implementation
 
-Using additionalProperty with PropertyValue structure:
+Numeric year preserved in PropertyValue:
 
 ```json
 {
@@ -66,31 +44,17 @@ Using additionalProperty with PropertyValue structure:
   "@id": "https://ror.org/042nb2s44",
   "identifier": "https://ror.org/042nb2s44",
   "name": "Massachusetts Institute of Technology",
-  "alternateName": "MIT",
-  "address": {
-    "@type": "PostalAddress",
-    "addressLocality": "Cambridge",
-    "addressRegion": "Massachusetts",
-    "addressCountry": "US"
-  },
-  "geo": {
-    "@type": "GeoCoordinates",
-    "latitude": 42.3601,
-    "longitude": -71.0942
-  },
   "additionalProperty": {
     "@type": "PropertyValue",
     "name": "established",
-    "value": 1861,
-    "description": "Year the organization was established",
-    "unitText": "year"
+    "value": 1861
   }
 }
 ```
 
-### Enhanced Implementation with Multiple Properties
+### Enhanced Implementation
 
-Demonstrating type-safe approach alongside other organizational metadata:
+With optional metadata:
 
 ```json
 {
@@ -99,271 +63,358 @@ Demonstrating type-safe approach alongside other organizational metadata:
   "@id": "https://ror.org/042nb2s44",
   "identifier": "https://ror.org/042nb2s44",
   "name": "Massachusetts Institute of Technology",
-  "alternateName": "MIT",
-  "address": {
-    "@type": "PostalAddress",
-    "addressLocality": "Cambridge",
-    "addressRegion": "Massachusetts", 
-    "addressCountry": "US"
-  },
-  "geo": {
-    "@type": "GeoCoordinates",
-    "latitude": 42.3601,
-    "longitude": -71.0942
-  },
-  "additionalProperty": [
-    {
-      "@type": "PropertyValue",
-      "name": "established",
-      "value": 1861,
-      "description": "Year the organization was established",
-      "unitText": "year",
-      "propertyID": "ROR:established"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "ror-institution-type",
-      "value": "education",
-      "description": "ROR organizational type classification"
-    }
-  ]
+  "additionalProperty": {
+    "@type": "PropertyValue",
+    "name": "established",
+    "value": 1861
+  }
 }
 ```
 
-### Alternative Date-Compatible Implementation
+---
 
-For systems requiring Schema.org Date compliance (with data transformation):
+## Step-by-Step Implementation
 
+### Step 1: Extract Establishment Year
+
+```javascript
+// Input: ROR established field
+const rorEstablished = 1861;
+
+// Verify it's a valid year
+const isValidYear = typeof rorEstablished === 'number' &&
+                   rorEstablished > 0 &&
+                   rorEstablished <= new Date().getFullYear();
+// Result: true
+```
+
+### Step 2: Create PropertyValue Structure
+
+```javascript
+const establishedProperty = {
+  "@type": "PropertyValue",
+  "name": "established",
+  "value": rorEstablished
+};
+```
+
+### Step 3: Add to Schema.org Object
+
+```javascript
+const schemaOrg = {
+  "@context": "https://schema.org",
+  "@type": "EducationalOrganization",
+  "@id": rorRecord.id,
+  "identifier": rorRecord.id,
+  "name": rorRecord.names[0].value,
+  "additionalProperty": establishedProperty
+};
+```
+
+---
+
+## Real-World Examples
+
+### Example 1: Recent Institution
+
+**ROR Input:**
+```json
+{
+  "established": 2003
+}
+```
+
+**Schema.org Output:**
 ```json
 {
   "@context": "https://schema.org",
   "@type": "EducationalOrganization",
-  "@id": "https://ror.org/042nb2s44",
-  "identifier": "https://ror.org/042nb2s44", 
-  "name": "Massachusetts Institute of Technology",
-  "alternateName": "MIT",
-  "foundingDate": "1861",
-  "address": {
-    "@type": "PostalAddress",
-    "addressLocality": "Cambridge",
-    "addressRegion": "Massachusetts",
-    "addressCountry": "US"
-  },
-  "geo": {
-    "@type": "GeoCoordinates",
-    "latitude": 42.3601,
-    "longitude": -71.0942
-  },
-  "additionalProperty": {
-    "@type": "PropertyValue", 
-    "name": "established-original",
-    "value": 1861,
-    "description": "Original numeric year from ROR",
-    "unitText": "year"
-  }
-}
-```
-
----
-
-## Mapping Logic Breakdown
-
-### 1. Type Safety Analysis
-
-**ROR Schema Definition**:
-```json
-"established": {
-  "type": ["null", "number"],
-  "default": null
-}
-```
-
-**Schema.org foundingDate Requirements**:
-```json
-{
-  "rangeIncludes": {"@id": "schema:Date"}
-}
-```
-
-**Incompatibility**: `number` ≠ `Date` type
-
-### 2. PropertyValue Solution
-
-**Applied Rule**: `ROR:established` → `schema:additionalProperty`
-
-```
-Source: "established": 1861 (number)
-Target: PropertyValue structure preserving type and semantics
-Confidence: 0.90 (high semantic + type preservation)
-```
-
-**Benefits**:
-- ✅ Preserves original numeric format
-- ✅ Maintains computational usability
-- ✅ Provides semantic context via description
-- ✅ Follows Schema.org extension patterns
-
-### 3. PropertyValue Structure Components
-
-```json
-{
-  "@type": "PropertyValue",
-  "name": "established",           // Field identifier
-  "value": 1861,                   // Original numeric value
-  "description": "Year the organization was established",  // Semantic context
-  "unitText": "year",              // Unit specification
-  "propertyID": "ROR:established"  // Source reference (optional)
-}
-```
-
----
-
-## Implementation Benefits
-
-### Type Safety
-- **No data transformation**: Original ROR number format preserved
-- **Schema.org compliance**: Uses approved PropertyValue pattern for custom data
-- **Computational integrity**: Numeric operations remain possible
-
-### Semantic Preservation
-- **Clear meaning**: Description field explains semantic intent
-- **Source attribution**: PropertyID links back to ROR schema
-- **Unit specification**: UnitText clarifies temporal context
-
-### Implementation Flexibility
-- **Core approach**: Basic PropertyValue for simple implementations
-- **Enhanced metadata**: Additional fields for rich applications
-- **Hybrid option**: Dual mapping for systems requiring both formats
-
----
-
-## Comparison with Rejected Approaches
-
-### foundingDate Mapping (Rejected)
-
-**Original mapping**: `ROR:established` → `schema:foundingDate`
-
-```json
-// Would require data transformation:
-{
-  "foundingDate": "1861-01-01"  // or "1861"
-}
-```
-
-**Issues**:
-- ❌ Type conversion required (number → Date)
-- ❌ Precision assumptions (year → full date)
-- ❌ Data transformation complexity
-- ❌ Potential information loss
-
-### Text Conversion (Rejected)
-
-```json
-{
+  "name": "New University",
   "additionalProperty": {
     "@type": "PropertyValue",
-    "name": "established", 
-    "value": "1861"  // String instead of number
+    "name": "established",
+    "value": 2003
   }
 }
 ```
 
-**Issues**:
-- ❌ Loses numeric typing
-- ❌ Reduces computational utility
-- ❌ Unnecessary data conversion
+### Example 2: Historic Institution
+
+**ROR Input:**
+```json
+{
+  "established": 1348
+}
+```
+
+**Schema.org Output:**
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "EducationalOrganization",
+  "name": "Charles University",
+  "additionalProperty": {
+    "@type": "PropertyValue",
+    "name": "established",
+    "value": 1348
+  }
+}
+```
+
+### Example 3: Null/Missing Establishment Year
+
+**ROR Input:**
+```json
+{
+  "established": null
+}
+```
+
+**Schema.org Output:**
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "EducationalOrganization",
+  "name": "Research Institute"
+}
+```
+*Note: No additionalProperty is added for null values*
 
 ---
 
-## Query and Usage Examples
+## Implementation Code Examples
 
-### SPARQL Query for Established Years
+### Python Implementation
 
-```sparql
-PREFIX schema: <https://schema.org/>
+```python
+def map_ror_established_to_schema(ror_established):
+    """
+    Map ROR established year to Schema.org additionalProperty
+    """
+    if ror_established is None:
+        return None
 
-SELECT ?org ?name ?established WHERE {
-  ?org a schema:Organization ;
-       schema:name ?name ;
-       schema:additionalProperty ?prop .
-  
-  ?prop a schema:PropertyValue ;
-        schema:name "established" ;
-        schema:value ?established .
-  
-  FILTER(?established > 1800)
-}
-ORDER BY ?established
+    # Validate year
+    current_year = datetime.now().year
+    if not isinstance(ror_established, int) or ror_established <= 0 or ror_established > current_year:
+        print(f"Warning: Invalid establishment year: {ror_established}")
+        return None
+
+    return {
+        "@type": "PropertyValue",
+        "name": "established",
+        "value": ror_established
+    }
 ```
 
-### JavaScript Processing
+### JavaScript Implementation
 
 ```javascript
-// Extract established year for calculations
-function getEstablishedYear(organization) {
-  const props = organization.additionalProperty || [];
-  const establishedProp = props.find(p => 
-    p['@type'] === 'PropertyValue' && 
-    p.name === 'established'
-  );
-  
-  return establishedProp ? establishedProp.value : null;
+function mapRorEstablishedToSchema(rorEstablished) {
+  if (rorEstablished === null || rorEstablished === undefined) {
+    return null;
+  }
+
+  // Validate year
+  const currentYear = new Date().getFullYear();
+  if (typeof rorEstablished !== 'number' ||
+      rorEstablished <= 0 ||
+      rorEstablished > currentYear) {
+    console.warn(`Invalid establishment year: ${rorEstablished}`);
+    return null;
+  }
+
+  return {
+    "@type": "PropertyValue",
+    "name": "established",
+    "value": rorEstablished
+  };
+}
+```
+
+### Enhanced Implementation with Validation
+
+```javascript
+function validateAndMapEstablished(rorEstablished) {
+  const result = {
+    valid: false,
+    property: null,
+    warnings: []
+  };
+
+  // Handle null/undefined
+  if (rorEstablished === null || rorEstablished === undefined) {
+    result.warnings.push("Establishment year is null");
+    return result;
+  }
+
+  // Type validation
+  if (typeof rorEstablished !== 'number') {
+    result.warnings.push(`Expected number, got ${typeof rorEstablished}`);
+    return result;
+  }
+
+  // Range validation
+  const currentYear = new Date().getFullYear();
+  if (rorEstablished <= 0) {
+    result.warnings.push("Establishment year must be positive");
+    return result;
+  }
+
+  if (rorEstablished > currentYear) {
+    result.warnings.push("Establishment year cannot be in the future");
+    return result;
+  }
+
+  // Create property
+  result.valid = true;
+  result.property = {
+    "@type": "PropertyValue",
+    "name": "established",
+    "value": rorEstablished
+  };
+
+  return result;
+}
+```
+
+---
+
+## Validation Examples
+
+### Test Case 1: Valid Year
+
+```javascript
+const input = 1985;
+const result = mapRorEstablishedToSchema(input);
+
+console.log(result["@type"]); // "PropertyValue"
+console.log(result.name); // "established"
+console.log(result.value); // 1985
+console.log(typeof result.value); // "number"
+```
+
+### Test Case 2: Null Value
+
+```javascript
+const input = null;
+const result = mapRorEstablishedToSchema(input);
+
+console.log(result); // null
+```
+
+### Test Case 3: Invalid Year
+
+```javascript
+const input = 2050; // Future year
+const result = validateAndMapEstablished(input);
+
+console.log(result.valid); // false
+console.log(result.warnings); // ["Establishment year cannot be in the future"]
+console.log(result.property); // null
+```
+
+### Test Case 4: Historic Institution
+
+```javascript
+const input = 1348;
+const result = mapRorEstablishedToSchema(input);
+
+console.log(result.value); // 1348
+console.log(typeof result.value); // "number"
+```
+
+---
+
+## Production Usage Example
+
+```javascript
+// Complete implementation for a ROR record
+function processRorRecord(rorRecord) {
+  const schemaOrg = {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "@id": rorRecord.id,
+    "identifier": rorRecord.id,
+    "name": rorRecord.names[0].value
+  };
+
+  // Add establishment year if present
+  if (rorRecord.established !== null && rorRecord.established !== undefined) {
+    const establishedProperty = mapRorEstablishedToSchema(rorRecord.established);
+    if (establishedProperty) {
+      schemaOrg.additionalProperty = establishedProperty;
+    }
+  }
+
+  return schemaOrg;
 }
 
-// Usage
-const mit = /* organization JSON */;
-const established = getEstablishedYear(mit);
-const age = new Date().getFullYear() - established;
-console.log(`MIT is ${age} years old`);
+// Usage with real data
+const rorRecord = {
+  "id": "https://ror.org/042nb2s44",
+  "names": [{"value": "Massachusetts Institute of Technology", "types": ["ror_display"]}],
+  "established": 1861
+};
+
+const schemaOutput = processRorRecord(rorRecord);
+console.log(JSON.stringify(schemaOutput, null, 2));
+
+// Verify numeric type is preserved
+console.log(typeof schemaOutput.additionalProperty.value); // "number"
+console.log(schemaOutput.additionalProperty.value === 1861); // true
+```
+
+### Combining with Other Properties
+
+```javascript
+// When combining established with other additionalProperties
+function combineAdditionalProperties(rorRecord) {
+  let additionalProperties = [];
+
+  // Add established year
+  if (rorRecord.established) {
+    const establishedProperty = mapRorEstablishedToSchema(rorRecord.established);
+    if (establishedProperty) {
+      additionalProperties.push(establishedProperty);
+    }
+  }
+
+  // Add status
+  if (rorRecord.status) {
+    additionalProperties.push({
+      "@type": "PropertyValue",
+      "name": "registryStatus",
+      "value": rorRecord.status
+    });
+  }
+
+  return additionalProperties.length === 1
+    ? additionalProperties[0]
+    : additionalProperties;
+}
+```
+
+### Date Conversion Alternative (Not Recommended)
+
+```javascript
+// Alternative approach converting to foundingDate (loses precision)
+function convertToFoundingDate(rorEstablished) {
+  if (!rorEstablished) return null;
+
+  // This loses the precise numeric year value
+  return `${rorEstablished}-01-01`; // Assumes January 1st
+}
+
+// The PropertyValue approach is preferred because:
+// 1. Preserves exact numeric value (1861 vs "1861-01-01")
+// 2. No assumptions about specific dates
+// 3. Type-safe for computational use
+// 4. Maintains data fidelity
 ```
 
 ---
 
-## Validation Against Mapping Requirements
-
-This example demonstrates adherence to strict type+semantic matching:
-
-✅ **Type compatibility**: PropertyValue accepts numeric values  
-✅ **Semantic preservation**: Description maintains establishment meaning  
-✅ **Data fidelity**: Original ROR data unchanged  
-✅ **Schema.org compliance**: Uses standard extension pattern  
-✅ **Implementation clarity**: Clear structure for developers  
-✅ **Query support**: Enables structured data queries  
-
-The PropertyValue approach provides the optimal solution when strict type safety is required while preserving full semantic meaning.
-
----
-
-## Alternative Implementation Contexts
-
-### HTML Microdata
-
-```html
-<div itemscope itemtype="https://schema.org/EducationalOrganization">
-  <span itemprop="name">Massachusetts Institute of Technology</span>
-  <div itemprop="additionalProperty" itemscope itemtype="https://schema.org/PropertyValue">
-    <meta itemprop="name" content="established">
-    <span itemprop="value">1861</span>
-    <meta itemprop="description" content="Year the organization was established">
-  </div>
-</div>
-```
-
-### RDFa
-
-```html
-<div vocab="https://schema.org/" typeof="EducationalOrganization">
-  <span property="name">Massachusetts Institute of Technology</span>
-  <div property="additionalProperty" typeof="PropertyValue">
-    <meta property="name" content="established">
-    <span property="value" datatype="xsd:integer">1861</span>
-    <meta property="description" content="Year the organization was established">
-  </div>
-</div>
-```
-
----
-
-*Example created: 2024-09-11*  
-*Based on mapping rules: mappings/sssom/ror_to_schema_human_in_loop.sssom.tsv:30*  
-*Related analysis: documentation/established/analysis.md*
+*Example created: 2024-09-15*
+*Based on mapping rules: mappings/ror_v2-1_schema_org_human_in_loop.sssom.tsv*
+*Related analysis: established/analysis.md*
