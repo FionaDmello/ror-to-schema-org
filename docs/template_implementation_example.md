@@ -84,26 +84,14 @@ Confidence: [CONFIDENCE_SCORE]
 
 ---
 
-## Alternative Implementation Approaches
+## Reverse Mapping: Schema.org to ROR
 
-### [APPROACH_1_NAME]
+### Example Schema.org Input
 
-```json
-{
-  "@context": "https://schema.org",
-  "@type": "[SCHEMA_TYPE]",
-  "[ALTERNATIVE_APPROACH_JSON]"
-}
-```
+### ROR [PROPERTY_NAME] Reconstruction
 
-**Benefits**: [ADVANTAGES]
-**Trade-offs**: [LIMITATIONS]
+### Resulting ROR [PROPERTY_NAME] Structure
 
-### [APPROACH_2_NAME]
-
-[Alternative approach if applicable]
-
----
 
 ## Implementation Benefits
 
