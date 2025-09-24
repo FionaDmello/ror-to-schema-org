@@ -7,13 +7,13 @@ ROR's `admin` field contains comprehensive administrative metadata about the lif
 ## Current Mappings (Lines 35-41)
 
 ```tsv
-ROR:admin	Administrative Information Object	skos:closeMatch	schema:CreativeWork	CreativeWork	Close mapping - ROR records are curated intellectual works with structured metadata	https://orcid.org/0000-0002-0465-1009	0.85	Administrative metadata for ROR record management as structured data products
-ROR:admin.created	Creation Information Object	skos:exactMatch	schema:additionalProperty	additionalProperty	Structured creation metadata preserving date and schema version relationship	https://orcid.org/0000-0002-0465-1009	0.92	Creation metadata as PropertyValue with date and schema version context
-ROR:admin.created.date	Creation Date	skos:exactMatch	schema:dateCreated	dateCreated	Semantic equivalence - specific creation date	https://orcid.org/0000-0002-0465-1009	0.95	ISO date format for record creation
-ROR:admin.created.schema_version	Creation Schema Version	skos:relatedMatch	schema:version	version	Related mapping - schema version at creation	https://orcid.org/0000-0002-0465-1009	0.85	Schema version when record was created (1.0, 2.0, 2.1)
-ROR:admin.last_modified	Last Modified Information Object	skos:exactMatch	schema:additionalProperty	additionalProperty	Structured modification metadata preserving date and schema version relationship	https://orcid.org/0000-0002-0465-1009	0.92	Modification metadata as PropertyValue with date and schema version context
-ROR:admin.last_modified.date	Last Modified Date	skos:exactMatch	schema:dateModified	dateModified	Semantic equivalence - specific modification date	https://orcid.org/0000-0002-0465-1009	0.95	ISO date format for record modification
-ROR:admin.last_modified.schema_version	Modification Schema Version	skos:relatedMatch	schema:version	version	Related mapping - schema version at modification	https://orcid.org/0000-0002-0465-1009	0.85	Schema version when record was last modified
+ROR:admin	Administrative Information Object	skos:exactMatch	schema:additionalProperty	additionalProperty	Exact mapping - admin metadata as PropertyValue containing array of StructuredValues	https://orcid.org/0000-0002-0465-1009	0.90	Administrative metadata with array of creation/modification StructuredValues for perfect structural preservation
+ROR:admin.created	Creation Information Object	skos:exactMatch	schema:StructuredValue	StructuredValue	Exact mapping - creation metadata as structured object with semantic properties	https://orcid.org/0000-0002-0465-1009	0.92	Creation metadata as StructuredValue with dateCreated and version properties
+ROR:admin.created.date	Creation Date	skos:exactMatch	schema:dateCreated	dateCreated	Semantic equivalence - specific creation date within StructuredValue	https://orcid.org/0000-0002-0465-1009	0.95	ISO date format for record creation within admin StructuredValue
+ROR:admin.created.schema_version	Creation Schema Version	skos:exactMatch	schema:version	version	Semantic equivalence - direct version mapping within StructuredValue	https://orcid.org/0000-0002-0465-1009	0.95	Schema version (1.0, 2.0, 2.1) as proper version property within creation StructuredValue
+ROR:admin.last_modified	Last Modified Information Object	skos:exactMatch	schema:StructuredValue	StructuredValue	Exact mapping - modification metadata as structured object with semantic properties	https://orcid.org/0000-0002-0465-1009	0.92	Modification metadata as StructuredValue with dateModified and version properties
+ROR:admin.last_modified.date	Last Modified Date	skos:exactMatch	schema:dateModified	dateModified	Semantic equivalence - specific modification date within StructuredValue	https://orcid.org/0000-0002-0465-1009	0.95	ISO date format for record modification within admin StructuredValue
+ROR:admin.last_modified.schema_version	Modification Schema Version	skos:exactMatch	schema:version	version	Semantic equivalence - direct version mapping within StructuredValue	https://orcid.org/0000-0002-0465-1009	0.95	Schema version (1.0, 2.0, 2.1) as proper version property within modification StructuredValue
 ```
 
 ## ROR Field Definition
@@ -69,27 +69,27 @@ ROR:admin.last_modified.schema_version	Modification Schema Version	skos:relatedM
 
 ## Schema.org Analysis
 
-### Container Mapping: `admin` → `CreativeWork`
-
-- **Property type:** Class
-- **Domain:** Thing
-- **Range:** CreativeWork subclass
-- **Comment:** The most generic kind of creative work
-- **Cardinality:** Single class assignment
-
-### Structured Mappings: `admin.created/last_modified` → `additionalProperty`
+### Container Mapping: `admin` → `additionalProperty`
 
 - **Property type:** ObjectProperty
-- **Domain:** Thing (covers CreativeWork)
-- **Range:** PropertyValue
-- **Comment:** Additional characteristics represented as property-value pairs
-- **Cardinality:** Multiple values supported
+- **Domain:** Thing (any Schema.org type)
+- **Range:** PropertyValue containing StructuredValue array
+- **Comment:** Property-value pairs for additional structured metadata
+- **Cardinality:** Multiple PropertyValue objects supported
 
-### Direct Mappings: Date Properties
+### Structured Mappings: `admin.created/last_modified` → `StructuredValue`
 
-- **`dateCreated`**: Date/DateTime range, single value
-- **`dateModified`**: Date/DateTime range, single value
-- **`version`**: Text/Number range, multiple values possible
+- **Property type:** Class
+- **Domain:** Used within PropertyValue.value
+- **Range:** StructuredValue with semantic properties
+- **Comment:** Structured values for complex data that doesn't fit standard properties
+- **Cardinality:** Array of StructuredValue objects
+
+### Direct Mappings: Date and Version Properties
+
+- **`dateCreated`**: Date/DateTime range within StructuredValue
+- **`dateModified`**: Date/DateTime range within StructuredValue
+- **`version`**: Text range within StructuredValue for schema versions
 
 ## Mapping Evaluation
 
@@ -167,20 +167,28 @@ ROR:admin.last_modified.schema_version	Modification Schema Version	skos:relatedM
 **Schema.org Output**:
 ```json
 {
-  "@type": "CreativeWork",
+  "@type": "EducationalOrganization",
+  "name": "Example University",
   "dateCreated": "2018-03-15",
   "dateModified": "2023-08-15",
-  "version": ["1.0", "2.1"],
   "additionalProperty": [
     {
       "@type": "PropertyValue",
-      "propertyID": "admin.created",
-      "value": {"date": "2018-03-15", "schema_version": "1.0"}
-    },
-    {
-      "@type": "PropertyValue",
-      "propertyID": "admin.last_modified",
-      "value": {"date": "2023-08-15", "schema_version": "2.1"}
+      "name": "recordAdministration",
+      "value": [
+        {
+          "@type": "StructuredValue",
+          "name": "created",
+          "dateCreated": "2018-03-15",
+          "version": "1.0"
+        },
+        {
+          "@type": "StructuredValue",
+          "name": "last_modified",
+          "dateModified": "2023-08-15",
+          "version": "2.1"
+        }
+      ]
     }
   ]
 }
