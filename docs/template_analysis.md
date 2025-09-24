@@ -4,12 +4,6 @@
 
 [Brief 1-2 sentence description of the field and its role in the ROR schema]
 
-## Current Mapping (Line [LINE_NUMBER])
-
-```tsv
-[CURRENT_MAPPING_LINE_FROM_SSSOM]
-```
-
 ## ROR Field Definition
 
 **Field:** `[FIELD_NAME]`
@@ -38,12 +32,6 @@
 - **Cardinality:** [SINGLE_OR_MULTIPLE]
 
 ## Mapping Evaluation
-
-### ✅ Current Mapping Strengths
-- [POSITIVE_ASPECTS]
-
-### ❌ Current Mapping Issues
-- [PROBLEMS_IDENTIFIED]
 
 ### Alternative Mappings Evaluated
 
