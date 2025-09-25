@@ -41,6 +41,8 @@ cut -f1 mappings/tsv/ror_to_schema.tsv | sort -u | grep "ROR:" | wc -l
 - `docs/admin/` - Administrative metadata mapping analysis
 - `docs/domains/` - Domain field mapping analysis
 - `docs/established/` - Establishment date mapping analysis
+- `docs/external_ids/` - External identifier PropertyValue mapping with valueReference
+- `docs/id/` - Primary ROR identifier PropertyValue mapping analysis
 - `docs/links/` - External links mapping analysis
 - `docs/names/` - Name field mapping analysis (multilingual approach)
 - `docs/organization_types/` - Organization type classification analysis
@@ -70,7 +72,9 @@ Each documentation folder contains:
 - **Administrative data**: Complete lifecycle tracking with `admin` field mapping
 - **Type mappings**: ROR organizational types to specific Schema.org Organization subclasses
 - **Location integration**: GeoNames data to Schema.org PostalAddress properties
-- **External identifiers**: Comprehensive mapping of ROR external_ids to Schema.org PropertyValue arrays
+- **Unified identifier system**: ROR.id and external_ids both mapped to `schema:identifier` using PropertyValue structure
+- **Bidirectional integrity**: Perfect reverse mapping via PropertyValue with valueReference for preferred status
+- **Structural consistency**: Uniform PropertyValue arrays eliminate mixed-type identifier structures
 
 ## Development Notes
 
@@ -79,3 +83,13 @@ Each documentation folder contains:
 - **Human-in-loop refinement** - manually reviewed versions with improved semantic accuracy
 - **Documentation-driven** - extensive analysis supporting each mapping decision
 - **Real-world examples** - implementation examples show complete JSON-LD output
+- **Semantic correctness priority** - prioritizes data integrity and bidirectional mapping over implementation simplicity
+
+## Advanced Mapping Techniques
+
+### PropertyValue with valueReference
+For complex identifier structures (external_ids), the project uses:
+- **PropertyValue base structure** for all identifier types
+- **valueReference nested objects** to preserve preferred status metadata
+- **propertyID differentiation** to distinguish primary from external identifiers
+- **Zero information loss** during bidirectional conversion

@@ -14,9 +14,13 @@ This repository provides comprehensive mappings from Research Organization Regis
 
 ### Comprehensive Documentation
 - **Field-by-field analysis** (`docs/`) - Complete mapping rationale for all ROR fields:
+  - `id` - Primary ROR identifier PropertyValue mapping for structural consistency
+  - `external_ids` - External identifier PropertyValue mapping with valueReference approach
   - `admin/` - Administrative metadata lifecycle mapping
   - `domains/` - Organization domain name mapping
   - `established/` - Establishment date mapping
+  - `external_ids/` - External identifier PropertyValue mapping with valueReference approach
+  - `id/` - Primary ROR identifier PropertyValue mapping for structural consistency
   - `links/` - External website and Wikipedia link mapping
   - `names/` - Multilingual name handling with StructuredValue approach
   - `organization_types/` - ROR type to Schema.org Organization subclass mapping
@@ -31,6 +35,8 @@ This repository provides comprehensive mappings from Research Organization Regis
 - **Example records** (`context/ror_examples/`) - Real ROR organization data
   - `example_record_v2_0.json` - Sample v2.0 ROR record
   - `example_record_v2_1.json` - Sample v2.1 ROR record
+- **Schema.org documentation** (`context/schema_org/`) - Official Schema.org documentation
+  - `schemaorg-current-https.jsonld` - JSON-LD context definitions for Schema.org
 
 ## Mapping Coverage & Quality
 
@@ -62,8 +68,15 @@ This repository provides comprehensive mappings from Research Organization Regis
 - **Administrative hierarchy**: Country, subdivision, and city data properly structured
 - **PostalAddress compliance**: Full Schema.org address property coverage
 
+#### Unified Identifier System
+- **PropertyValue consistency**: Both ROR.id and external_ids use PropertyValue structure
+- **Semantic separation**: Primary identifiers (propertyID="ror") vs external identifiers (propertyID=system)
+- **Preferred status preservation**: valueReference nested PropertyValue for external_ids.preferred
+- **Bidirectional integrity**: Perfect reverse mapping from Schema.org back to ROR structure
+- **Zero information loss**: All ROR identifier metadata preserved during conversion
+
 #### External Identity & Links
-- **Comprehensive external_ids mapping**: All ROR identifier types mapped to PropertyValue arrays
+- **Advanced identifier mapping**: PropertyValue with valueReference for complex external identifier structures
 - **Link classification**: Website vs Wikipedia links properly differentiated
 - **URL validation**: Proper Schema.org URL and sameAs property usage
 
@@ -103,9 +116,13 @@ wc -l mappings/tsv/*.tsv
 
 # Extract specific field mappings
 grep "ROR:names" mappings/tsv/ror_to_schema.tsv
+grep "ROR:external_ids" mappings/tsv/ror_to_schema_human_in_loop.tsv
 
 # Count unique mapped fields
 cut -f1 mappings/tsv/ror_to_schema.tsv | sort -u | grep "ROR:" | wc -l
+
+# View advanced PropertyValue mappings
+grep "propertyID\|valueReference" mappings/tsv/ror_to_schema_human_in_loop.tsv
 ```
 
 ## Quality Assurance

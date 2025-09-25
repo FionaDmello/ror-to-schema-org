@@ -158,6 +158,6 @@ ROR:links[type=wikipedia].value	Wikipedia Reference URLs	skos:exactMatch	schema:
 
 ---
 
-*Analysis conducted: 2024-09-24*
+*Analysis conducted: 2025-09-24*
 *Updated mapping file: mappings/sssom/ror_to_schema_human_in_loop.sssom.tsv*
 *Related analysis: External IDs mapping (similar sameAs pattern)*
