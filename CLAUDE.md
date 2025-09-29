@@ -47,6 +47,8 @@ cut -f1 mappings/tsv/ror_to_schema.tsv | sort -u | grep "ROR:" | wc -l
 - `docs/names/` - Name field mapping analysis (multilingual approach)
 - `docs/organization_types/` - Organization type classification analysis
 - `docs/status/` - Organization status field analysis
+- `docs/organization_types` - Organization type classification analysis
+- `docs/location` - Location field mapping analysis
 
 Each documentation folder contains:
 - `analysis.md` - Detailed field analysis and mapping rationale

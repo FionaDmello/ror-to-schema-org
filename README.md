@@ -25,6 +25,7 @@ This repository provides comprehensive mappings from Research Organization Regis
   - `names/` - Multilingual name handling with StructuredValue approach
   - `organization_types/` - ROR type to Schema.org Organization subclass mapping
   - `status/` - Organization status field mapping
+  - `location` - Location field mapping
 - **Implementation examples** - Complete JSON-LD output examples for each field group
 - **Mapping analysis** - Detailed semantic reasoning for each mapping decision
 

@@ -43,7 +43,7 @@ converting all identifiers into URLs is modifying data that ROR provides. I am n
 ```
 would this be valid both semantically and type wise? Would it allow bidirectional mapping?
 
-##### prompt 5
+#### prompt 5
 Great. I have one small problem. The identifier array, contains one string (for the ROR ID) and the rest are objects. This looks like an array of mixed types. Can something be done about this? I do not want to change the approach we discussed for external_ids. So maintain this solution but tell me how I could simplistically adapt the ROR ID.
 
 #### prompt 6
@@ -51,3 +51,60 @@ Great update the mappings for ROR.id and ROR.external_ids and related properties
 
 #### prompt 7
 Now create a folder each for id and external_ids at @docs. In each create a analysis.md and implementation_example.md. Use @docs/template_analysis.md and @docs/template_implementation_example.md as reference and create documentation giving reasoning for the mapping for ROR.id @mappings/sssom/ror_to_schema_human_in_loop.sssom.tsv:30 and ROR.external_ids @mappings/sssom/ror_to_schema_human_in_loop.sssom.tsv:31-34 respectively. Do not autogenerate content that ROR does not provide. Provide some information on bidirectional mapping in the example files for each property. Also, mention how the two properties are linked and why they have been mapped into the same property in schema.org, and how to distinguish them apart when reverse mapping. Keep things simple, clear, concise and practical
+
+
+## ROR.locations
+
+#### prompt 1
+given the mappings
+  @mappings/sssom/ror_to_schema_human_in_loop.sssom.tsv:20-50, I want to
+  find the best mappings for the locations key in ROR, as mentioned in
+  @mappings/sssom/ror_to_schema_human_in_loop.sssom.tsv:53-64. The
+  mapping needs to be valid both semantically and data type wise. The
+  mapping should be bidirectionally sound. Do not auto generate
+  information that is not provided and expected from ROR. Use
+  @context/ror/ror_schema_v2_1.json and
+  @context/schemaorg-current-https.jsonld for context and reference.
+  Break down the problem into small steps and explain your reasoning at
+  each step in clear, simple and concise fashion. Ask clarifying
+  questions when required
+
+  ### prompt 2
+  how about
+  {
+   location: {
+     type: "Place",
+     identifier: 5378538,
+     name: "Oakland",
+     latitude: 37.8044,
+     longitude: -122.2711
+     containedInPlace: {
+       @type: "State",
+       name: "California",
+       identifier: "CA",
+       address: {
+         type: "PostalAddress",
+         addressCountry: {
+           @type: "Country",
+           name: "United States"
+           identifier: "US",
+           containedInPlace: {
+             @type: "Continent",
+             name: "North America",
+             identifier: "NA"
+           }
+         }
+       },
+     },
+   }
+  } ? evaluate the following mapping in detail. Does this cover everything ROR could potentially provide? What are the limitations of this mapping?
+  
+  ### prompt 3
+  what is the reasoning behind 'Issue: PostalAddress.addressCountry expects Text or Country, but you cannot embed a full Country object with containedInPlace within a PostalAddress. This violates
+    Schema.org's expected data structure.'? Where is the proof. Explain in steps in clear concise fashion
+    
+### prompt 4
+Give me a clear report of how well this mapping works and how to best implement it
+    
+###
+Now create a folder each for location  at @docs. Create a analysis.md and implementation_example.md. Use @docs/template_analysis.md and @docs/template_implementation_example.md as reference and create documentation giving reasoning for the mapping for ROR.location @mappings/sssom/ror_to_schema_human_in_loop.sssom.tsv:51-62. Do not autogenerate content that ROR does not provide. Provide some information on bidirectional mapping in the example files for each property. Make particular practical note of implementation complexity and how to handle it. Consider the potential for nested properties and how to handle them efficiently.
