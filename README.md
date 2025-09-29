@@ -25,7 +25,8 @@ This repository provides comprehensive mappings from Research Organization Regis
   - `names/` - Multilingual name handling with StructuredValue approach
   - `organization_types/` - ROR type to Schema.org Organization subclass mapping
   - `status/` - Organization status field mapping
-  - `location` - Location field mapping
+  - `locations/` - Hierarchical Place mapping with containedInPlace relationships
+  - `relationships/` - Organizational relationships with type-specific routing
 - **Implementation examples** - Complete JSON-LD output examples for each field group
 - **Mapping analysis** - Detailed semantic reasoning for each mapping decision
 
@@ -63,11 +64,12 @@ This repository provides comprehensive mappings from Research Organization Regis
   - Facility → Organization (with additionalType)
 - **Semantic accuracy**: Human-reviewed mappings ensure proper Schema.org compliance
 
-#### Location & Geographic Data
-- **GeoNames integration**: Complete address mapping from ROR locations
-- **Coordinate preservation**: Direct latitude/longitude mapping
-- **Administrative hierarchy**: Country, subdivision, and city data properly structured
-- **PostalAddress compliance**: Full Schema.org address property coverage
+#### Location & Geographic Data (Updated 2024-09-29)
+- **Hierarchical Place mapping**: GeoNames data to Schema.org Place hierarchy with containedInPlace relationships
+- **Complete geographic preservation**: All 10+ ROR location fields mapped without conflicts or data loss
+- **Coordinate preservation**: Direct latitude/longitude mapping to Place properties
+- **Administrative hierarchy**: Place → State → Country → Continent containedInPlace structure
+- **Bidirectional integrity**: Perfect round-trip conversion between ROR and Schema.org formats
 
 #### Unified Identifier System
 - **PropertyValue consistency**: Both ROR.id and external_ids use PropertyValue structure

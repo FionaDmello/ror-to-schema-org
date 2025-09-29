@@ -117,23 +117,6 @@ The ROR locations field contains comprehensive geographic information about an o
 4. **Schema.org Compliance**: Fully validated against Schema.org specifications for Place, State, Country, and Continent types
 5. **Extensibility**: Framework supports future ROR geographic enhancements
 
-### Updated Mapping
-
-```tsv
-ROR:locations	Organization Locations Array	skos:exactMatch	schema:location	location	Semantic equivalence - ROR locations as hierarchical Place objects	https://orcid.org/0000-0002-0465-1009	0.93	Array of location objects mapped to hierarchical Place structures with containedInPlace relationships
-ROR:locations.geonames_id	GeoNames ID	skos:exactMatch	schema:identifier	identifier	Exact mapping - GeoNames identifier as Place identifier	https://orcid.org/0000-0002-0465-1009	0.95	Integer identifier referencing GeoNames database as Place.identifier
-ROR:locations.geonames_details	GeoNames Details Object	skos:exactMatch	schema:Place	Place	Exact mapping - geonames_details as Place object properties	https://orcid.org/0000-0002-0465-1009	0.92	Nested object containing geographic metadata as Place properties
-ROR:locations.geonames_details.name	Location Name	skos:exactMatch	schema:name	name	Exact mapping - location name as Place name	https://orcid.org/0000-0002-0465-1009	0.95	Name of the geographic location as Place.name property
-ROR:locations.geonames_details.lat	Latitude	skos:exactMatch	schema:latitude	latitude	Exact mapping - decimal latitude coordinate on Place	https://orcid.org/0000-0002-0465-1009	0.98	Decimal latitude coordinate as Place.latitude property
-ROR:locations.geonames_details.lng	Longitude	skos:exactMatch	schema:longitude	longitude	Exact mapping - decimal longitude coordinate on Place	https://orcid.org/0000-0002-0465-1009	0.98	Decimal longitude coordinate as Place.longitude property
-ROR:locations.geonames_details.continent_code	Continent Code	skos:exactMatch	schema:identifier	identifier	Exact mapping - continent code as Continent Place identifier	https://orcid.org/0000-0002-0465-1009	0.93	Two-letter continent codes as Continent.identifier in containedInPlace hierarchy
-ROR:locations.geonames_details.continent_name	Continent Name	skos:exactMatch	schema:name	name	Exact mapping - continent name as Continent Place name	https://orcid.org/0000-0002-0465-1009	0.95	Continent names as Continent.name in containedInPlace hierarchy
-ROR:locations.geonames_details.country_code	Country Code	skos:exactMatch	schema:identifier	identifier	Exact mapping - country code as Country Place identifier	https://orcid.org/0000-0002-0465-1009	0.95	Two-letter ISO country codes as Country.identifier in containedInPlace hierarchy
-ROR:locations.geonames_details.country_name	Country Name	skos:exactMatch	schema:name	name	Exact mapping - country name as Country Place name	https://orcid.org/0000-0002-0465-1009	0.95	Full country names as Country.name in containedInPlace hierarchy
-ROR:locations.geonames_details.country_subdivision_code	Country Subdivision Code	skos:exactMatch	schema:identifier	identifier	Exact mapping - subdivision code as State Place identifier	https://orcid.org/0000-0002-0465-1009	0.92	1-3 character subdivision codes as State.identifier in containedInPlace hierarchy
-ROR:locations.geonames_details.country_subdivision_name	Country Subdivision Name	skos:exactMatch	schema:name	name	Exact mapping - subdivision name as State Place name	https://orcid.org/0000-0002-0465-1009	0.94	State, province, or region names as State.name in containedInPlace hierarchy
-```
-
 ## Confidence Rationale
 
 **Confidence: 0.93** based on:

@@ -56,18 +56,7 @@ Now create a folder each for id and external_ids at @docs. In each create a anal
 ## ROR.locations
 
 #### prompt 1
-given the mappings
-  @mappings/sssom/ror_to_schema_human_in_loop.sssom.tsv:20-50, I want to
-  find the best mappings for the locations key in ROR, as mentioned in
-  @mappings/sssom/ror_to_schema_human_in_loop.sssom.tsv:53-64. The
-  mapping needs to be valid both semantically and data type wise. The
-  mapping should be bidirectionally sound. Do not auto generate
-  information that is not provided and expected from ROR. Use
-  @context/ror/ror_schema_v2_1.json and
-  @context/schemaorg-current-https.jsonld for context and reference.
-  Break down the problem into small steps and explain your reasoning at
-  each step in clear, simple and concise fashion. Ask clarifying
-  questions when required
+given the mappings @mappings/sssom/ror_to_schema_human_in_loop.sssom.tsv:20-50, I want to find the best mappings for the locations key in ROR, as mentioned in @mappings/sssom/ror_to_schema_human_in_loop.sssom.tsv:53-64. The mapping needs to be valid both semantically and data type wise. The mapping should be bidirectionally sound. Do not auto generate information that is not provided and expected from ROR. Use @context/ror/ror_schema_v2_1.json and @context/schemaorg-current-https.jsonld for context and reference. Break down the problem into small steps and explain your reasoning at each step in clear, simple and concise fashion. Ask clarifying questions when required
 
   ### prompt 2
   how about
@@ -98,13 +87,34 @@ given the mappings
      },
    }
   } ? evaluate the following mapping in detail. Does this cover everything ROR could potentially provide? What are the limitations of this mapping?
-  
+
   ### prompt 3
   what is the reasoning behind 'Issue: PostalAddress.addressCountry expects Text or Country, but you cannot embed a full Country object with containedInPlace within a PostalAddress. This violates
     Schema.org's expected data structure.'? Where is the proof. Explain in steps in clear concise fashion
-    
+
 ### prompt 4
 Give me a clear report of how well this mapping works and how to best implement it
-    
-###
+
+### prompt 5
 Now create a folder each for location  at @docs. Create a analysis.md and implementation_example.md. Use @docs/template_analysis.md and @docs/template_implementation_example.md as reference and create documentation giving reasoning for the mapping for ROR.location @mappings/sssom/ror_to_schema_human_in_loop.sssom.tsv:51-62. Do not autogenerate content that ROR does not provide. Provide some information on bidirectional mapping in the example files for each property. Make particular practical note of implementation complexity and how to handle it. Consider the potential for nested properties and how to handle them efficiently.
+
+
+## ROR.relationships
+
+### prompt 1
+given the mappings @mappings/sssom/ror_to_schema_human_in_loop.sssom.tsv:20-62, I want to find the best mappings for the relationships key in ROR, as mentioned in @mappings/sssom/ror_to_schema_human_in_loop.sssom.tsv:64-72. The mapping needs to be valid both semantically and data type wise. The mapping should be bidirectionally sound. Do not auto generate information that is not provided and expected from ROR. Use @context/ror/ror_schema_v2_1.json and @context/schemaorg-current-https.jsonld for context and reference. Break down the problem into small steps and explain your reasoning at each step in clear, simple and concise fashion. Ask clarifying questions when required
+
+### prompt 2 
+Can you use https://ror.org/0281dp749 as an example and tell me how the mapping you recommend would look like?
+
+### prompt 3
+what was the full recommended mapping?
+
+### prompt 4
+go ahead and proceed to update the mappings @mappings/tsv/ror_to_schema_human_in_loop.tsv  and @mappings/sssom/ror_to_schema_human_in_loop.sssom.tsv for the relationships key, with the recommended mapping
+
+### prompt 5
+Now create a folder each for relationships at @docs. Create a analysis.md and implementation_example.md. Use @docs/template_analysis.md and @docs/template_implementation_example.md as reference and create documentation giving reasoning for the mapping for ROR.relationships @mappings/sssom/ror_to_schema_human_in_loop.sssom.tsv:64-72. Do not autogenerate content that ROR does not provide. Provide some information on bidirectional mapping in the example files for each property. Make particular practical note of implementation complexity and how to handle it. Consider the potential for nested properties and how to handle them efficiently.
+
+### prompt 6
+update @CLAUDE.md and @README.md with information on changes made today as well. Do not modify existing content, just append related information to it with todays changes.

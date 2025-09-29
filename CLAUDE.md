@@ -47,8 +47,8 @@ cut -f1 mappings/tsv/ror_to_schema.tsv | sort -u | grep "ROR:" | wc -l
 - `docs/names/` - Name field mapping analysis (multilingual approach)
 - `docs/organization_types/` - Organization type classification analysis
 - `docs/status/` - Organization status field analysis
-- `docs/organization_types` - Organization type classification analysis
-- `docs/location` - Location field mapping analysis
+- `docs/locations/` - Location field hierarchical Place mapping analysis
+- `docs/relationships/` - Organizational relationships mapping analysis
 
 Each documentation folder contains:
 - `analysis.md` - Detailed field analysis and mapping rationale
@@ -73,7 +73,7 @@ Each documentation folder contains:
 - **Multilingual support**: StructuredValue with Language objects for Schema.org compliance
 - **Administrative data**: Complete lifecycle tracking with `admin` field mapping
 - **Type mappings**: ROR organizational types to specific Schema.org Organization subclasses
-- **Location integration**: GeoNames data to Schema.org PostalAddress properties
+- **Hierarchical location mapping**: GeoNames data to Schema.org Place hierarchy with containedInPlace relationships
 - **Unified identifier system**: ROR.id and external_ids both mapped to `schema:identifier` using PropertyValue structure
 - **Bidirectional integrity**: Perfect reverse mapping via PropertyValue with valueReference for preferred status
 - **Structural consistency**: Uniform PropertyValue arrays eliminate mixed-type identifier structures
@@ -95,3 +95,17 @@ For complex identifier structures (external_ids), the project uses:
 - **valueReference nested objects** to preserve preferred status metadata
 - **propertyID differentiation** to distinguish primary from external identifiers
 - **Zero information loss** during bidirectional conversion
+
+### Hierarchical Place Mapping (Updated 2024-09-29)
+For geographic location data (locations), the project implements:
+- **containedInPlace hierarchy**: Place → State → Country → Continent structure
+- **Complete geographic preservation**: All 10+ ROR location fields mapped without conflicts
+- **Bidirectional integrity**: Perfect round-trip conversion capability
+- **Schema.org compliance**: Uses proper Place, State, Country, Continent types
+
+### Hybrid Organizational Relationships (Updated 2024-09-29)
+For organizational relationships (relationships), the project uses:
+- **Type-specific routing**: Direct Schema.org properties for clear equivalents (parent/child)
+- **Structured preservation**: PropertyValue approach for ambiguous relationships (related, successor, predecessor)
+- **Semantic accuracy**: Eliminates incorrect action-based mappings (replacer/replacee)
+- **Implementation efficiency**: Clear routing logic based on relationship.type enum values
