@@ -109,3 +109,6 @@ For organizational relationships (relationships), the project uses:
 - **Structured preservation**: PropertyValue approach for ambiguous relationships (related, successor, predecessor)
 - **Semantic accuracy**: Eliminates incorrect action-based mappings (replacer/replacee)
 - **Implementation efficiency**: Clear routing logic based on relationship.type enum values
+
+## Memories
+- Planning for ror converter library

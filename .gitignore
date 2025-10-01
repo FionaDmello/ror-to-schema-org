@@ -50,4 +50,5 @@ Thumbs.db
 *.temp
 
 # User edits
-prompts.txt
+library_prompts.md
+mapping_prompts.md
